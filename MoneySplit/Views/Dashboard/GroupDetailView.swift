@@ -4,7 +4,12 @@ struct GroupDetailView: View {
     let group: SplitGroup
     @State private var selectedTab = 0
     @State private var showAddExpense = false
-    @State private var vm: GroupDetailViewModel?
+    @StateObject private var vm: GroupDetailViewModel
+
+    init(group: SplitGroup) {
+        self.group = group
+        _vm = StateObject(wrappedValue: GroupDetailViewModel(group: group))
+    }
 
     var body: some View {
         TabView(selection: $selectedTab) {
@@ -36,15 +41,8 @@ struct GroupDetailView: View {
         .sheet(isPresented: $showAddExpense) {
             ExpenseFormView(group: group)
         }
-        .onAppear {
-            if vm == nil {
-                vm = GroupDetailViewModel(group: group)
-            } else {
-                vm?.reload()
-            }
-        }
         .onChange(of: selectedTab) {
-            vm?.reload()
+            vm.reload()
         }
     }
 }

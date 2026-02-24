@@ -58,8 +58,8 @@ enum BalanceCalculator {
         var result: [Settlement] = []
 
         while !creditors.isEmpty && !debtors.isEmpty {
-            var creditor = creditors.removeFirst()
-            var debtor   = debtors.removeFirst()
+            let creditor = creditors.removeFirst()
+            let debtor   = debtors.removeFirst()
 
             let amount = min(creditor.netCents, -debtor.netCents)
 

@@ -3,34 +3,22 @@ import SwiftUI
 struct ExpenseListView: View {
     @Environment(\.modelContext) private var modelContext
     let group: SplitGroup
-    @State private var vm: ExpenseListViewModel?
-    @State private var expenseToEdit: Expense? = nil
-    @State private var showAddExpense = false
 
     var body: some View {
-        Group {
-            if let vm {
-                ExpenseListContent(
-                    vm: vm,
-                    group: group,
-                    showAdd: $showAddExpense,
-                    expenseToEdit: $expenseToEdit
-                )
-            }
-        }
-        .onAppear {
-            if vm == nil {
-                vm = ExpenseListViewModel(group: group, context: modelContext)
-            }
-        }
+        ExpenseListContent(context: modelContext, group: group)
     }
 }
 
 private struct ExpenseListContent: View {
-    @ObservedObject var vm: ExpenseListViewModel
+    @StateObject private var vm: ExpenseListViewModel
     let group: SplitGroup
-    @Binding var showAdd: Bool
-    @Binding var expenseToEdit: Expense?
+    @State private var showAdd = false
+    @State private var expenseToEdit: Expense? = nil
+
+    init(context: ModelContext, group: SplitGroup) {
+        self.group = group
+        _vm = StateObject(wrappedValue: ExpenseListViewModel(group: group, context: context))
+    }
 
     var body: some View {
         List {

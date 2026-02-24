@@ -4,7 +4,6 @@ import SwiftData
 struct GroupListView: View {
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \SplitGroup.createdAt, order: .reverse) private var groups: [SplitGroup]
-    @State private var vm: GroupListViewModel?
     @State private var showCreateGroup = false
     @State private var groupToEdit: SplitGroup? = nil
 
@@ -27,7 +26,8 @@ struct GroupListView: View {
                             }
                             .swipeActions(edge: .trailing, allowsFullSwipe: false) {
                                 Button(role: .destructive) {
-                                    vm?.deleteGroups([group])
+                                    modelContext.delete(group)
+                                    try? modelContext.save()
                                 } label: {
                                     Label("Delete", systemImage: "trash")
                                 }
@@ -59,11 +59,6 @@ struct GroupListView: View {
             }
             .sheet(item: $groupToEdit) { group in
                 GroupFormView(group: group)
-            }
-            .onAppear {
-                if vm == nil {
-                    vm = GroupListViewModel(context: modelContext)
-                }
             }
         }
     }

@@ -3,27 +3,21 @@ import SwiftUI
 struct MembersView: View {
     @Environment(\.modelContext) private var modelContext
     let group: SplitGroup
-    @State private var vm: MembersViewModel?
-    @State private var memberToEdit: Member? = nil
 
     var body: some View {
-        Group {
-            if let vm {
-                MembersContent(vm: vm, group: group, memberToEdit: $memberToEdit)
-            }
-        }
-        .onAppear {
-            if vm == nil {
-                vm = MembersViewModel(group: group, context: modelContext)
-            }
-        }
+        MembersContent(context: modelContext, group: group)
     }
 }
 
 private struct MembersContent: View {
-    @ObservedObject var vm: MembersViewModel
+    @StateObject private var vm: MembersViewModel
     let group: SplitGroup
-    @Binding var memberToEdit: Member?
+    @State private var memberToEdit: Member? = nil
+
+    init(context: ModelContext, group: SplitGroup) {
+        self.group = group
+        _vm = StateObject(wrappedValue: MembersViewModel(group: group, context: context))
+    }
 
     var body: some View {
         List {
