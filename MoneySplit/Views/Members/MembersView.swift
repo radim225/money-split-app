@@ -1,4 +1,5 @@
 import SwiftUI
+import SwiftData
 
 struct MembersView: View {
     @Environment(\.modelContext) private var modelContext
