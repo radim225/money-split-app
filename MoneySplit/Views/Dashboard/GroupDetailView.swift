@@ -29,8 +29,8 @@ struct GroupDetailView: View {
         .navigationTitle(group.name)
         .navigationBarTitleDisplayMode(.large)
         .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
-                if selectedTab != 3 {
+            if selectedTab != 3 {
+                ToolbarItem(placement: .topBarTrailing) {
                     Button {
                         showAddExpense = true
                     } label: {
