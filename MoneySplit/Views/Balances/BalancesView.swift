@@ -2,21 +2,15 @@ import SwiftUI
 
 struct BalancesView: View {
     let group: SplitGroup
-    @State private var vm: BalancesViewModel?
+    @StateObject private var vm: BalancesViewModel
+
+    init(group: SplitGroup) {
+        self.group = group
+        _vm = StateObject(wrappedValue: BalancesViewModel(group: group))
+    }
 
     var body: some View {
-        Group {
-            if let vm {
-                BalancesContent(vm: vm, group: group)
-            }
-        }
-        .onAppear {
-            if vm == nil {
-                vm = BalancesViewModel(group: group)
-            } else {
-                vm?.reload()
-            }
-        }
+        BalancesContent(vm: vm, group: group)
     }
 }
 

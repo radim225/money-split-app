@@ -4,23 +4,18 @@ import Charts
 struct MemberDetailView: View {
     let member: Member
     let group: SplitGroup
-    @State private var vm: MemberDetailViewModel?
+    @StateObject private var vm: MemberDetailViewModel
+
+    init(member: Member, group: SplitGroup) {
+        self.member = member
+        self.group = group
+        _vm = StateObject(wrappedValue: MemberDetailViewModel(member: member, group: group))
+    }
 
     var body: some View {
-        Group {
-            if let vm {
-                MemberDetailContent(vm: vm, group: group)
-            }
-        }
-        .navigationTitle(member.name)
-        .navigationBarTitleDisplayMode(.large)
-        .onAppear {
-            if vm == nil {
-                vm = MemberDetailViewModel(member: member, group: group)
-            } else {
-                vm?.reload()
-            }
-        }
+        MemberDetailContent(vm: vm, group: group)
+            .navigationTitle(member.name)
+            .navigationBarTitleDisplayMode(.large)
     }
 }
 
