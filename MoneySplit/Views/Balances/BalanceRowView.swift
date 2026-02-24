@@ -21,7 +21,7 @@ struct BalanceRowView: View {
             VStack(alignment: .trailing, spacing: 2) {
                 let net = balance.netCents
                 if net == 0 {
-                    Text("Settled")
+                    Text("Even")
                         .font(.subheadline.weight(.medium))
                         .foregroundStyle(.secondary)
                 } else if net > 0 {

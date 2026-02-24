@@ -84,7 +84,7 @@ struct DashboardSummaryView: View {
                                     VStack(alignment: .trailing, spacing: 2) {
                                         let net = summary.netCents
                                         if net == 0 {
-                                            Text("Settled")
+                                            Text("Even")
                                                 .font(.caption.weight(.medium))
                                                 .foregroundStyle(.secondary)
                                         } else if net > 0 {

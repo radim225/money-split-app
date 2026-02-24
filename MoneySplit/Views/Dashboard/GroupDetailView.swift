@@ -30,11 +30,13 @@ struct GroupDetailView: View {
         .navigationBarTitleDisplayMode(.large)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
-                Button {
-                    showAddExpense = true
-                } label: {
-                    Image(systemName: "plus.circle.fill")
-                        .font(.title3)
+                if selectedTab != 3 {
+                    Button {
+                        showAddExpense = true
+                    } label: {
+                        Image(systemName: "plus.circle.fill")
+                            .font(.title3)
+                    }
                 }
             }
         }
