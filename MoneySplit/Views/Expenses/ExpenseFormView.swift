@@ -20,6 +20,7 @@ private struct ExpenseFormContent: View {
     @StateObject private var vm: ExpenseFormViewModel
     @Environment(\.dismiss) private var dismiss
     let group: SplitGroup
+    @State private var showCurrencyPicker = false
 
     init(context: ModelContext, group: SplitGroup, expense: Expense? = nil) {
         self.group = group
@@ -39,11 +40,54 @@ private struct ExpenseFormContent: View {
                         .autocorrectionDisabled()
 
                     HStack {
-                        Text(group.currencyCode)
-                            .foregroundStyle(.secondary)
+                        // Currency picker button
+                        Button {
+                            showCurrencyPicker = true
+                        } label: {
+                            HStack(spacing: 4) {
+                                Text(vm.selectedCurrencyCode)
+                                    .fontWeight(.medium)
+                                Image(systemName: "chevron.up.chevron.down")
+                                    .font(.caption2)
+                            }
+                            .foregroundStyle(
+                                vm.selectedCurrencyCode != group.currencyCode
+                                    ? AppTheme.accentColor
+                                    : .secondary
+                            )
+                        }
+
                         TextField("0.00", text: $vm.amountString)
                             .keyboardType(.decimalPad)
                             .onChange(of: vm.amountString) { vm.recalculateSplits() }
+                    }
+
+                    // Conversion preview row
+                    if vm.selectedCurrencyCode != group.currencyCode {
+                        if vm.isLoadingRate {
+                            HStack(spacing: 6) {
+                                ProgressView().scaleEffect(0.7)
+                                Text("Fetching exchange rate…")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                        } else if let converted = vm.convertedPreviewCents {
+                            HStack(spacing: 4) {
+                                Image(systemName: "arrow.left.arrow.right")
+                                    .font(.caption2)
+                                    .foregroundStyle(.secondary)
+                                Text("≈ \(CurrencyFormatter.format(cents: converted, currencyCode: group.currencyCode))")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                                Text("(stored in \(group.currencyCode))")
+                                    .font(.caption2)
+                                    .foregroundStyle(Color(.tertiaryLabel))
+                            }
+                        } else if let err = vm.rateError {
+                            Label(err, systemImage: "exclamationmark.triangle")
+                                .font(.caption)
+                                .foregroundStyle(.red)
+                        }
                     }
 
                     // Category chips
@@ -236,11 +280,18 @@ private struct ExpenseFormContent: View {
                     }
                 }
             }
+            // Re-fetch rate whenever currency or amount changes
+            .task(id: vm.selectedCurrencyCode + vm.amountString) {
+                await vm.fetchConvertedAmount()
+            }
+            .sheet(isPresented: $showCurrencyPicker) {
+                CurrencyPickerSheet(selectedCode: $vm.selectedCurrencyCode)
+            }
         }
     }
 
     private var splitFooter: some View {
-        let total = vm.amountCents
+        let total = vm.effectiveAmountCents
         let assigned = vm.manualSplitTotalCents
         let diff = total - assigned
         return HStack {
@@ -260,6 +311,52 @@ private struct ExpenseFormContent: View {
             }
         }
         .font(.caption.weight(.medium))
+    }
+}
+
+// MARK: – Currency Picker Sheet
+
+private struct CurrencyPickerSheet: View {
+    @Binding var selectedCode: String
+    @Environment(\.dismiss) private var dismiss
+    @State private var searchText = ""
+
+    var filteredCurrencies: [String] {
+        if searchText.isEmpty { return AppConstants.supportedCurrencies }
+        return AppConstants.supportedCurrencies.filter {
+            $0.localizedCaseInsensitiveContains(searchText)
+        }
+    }
+
+    var body: some View {
+        NavigationStack {
+            List(filteredCurrencies, id: \.self) { code in
+                Button {
+                    selectedCode = code
+                    dismiss()
+                } label: {
+                    HStack {
+                        Text(code)
+                            .font(.body)
+                            .foregroundStyle(.primary)
+                        Spacer()
+                        if code == selectedCode {
+                            Image(systemName: "checkmark")
+                                .foregroundStyle(AppTheme.accentColor)
+                                .fontWeight(.semibold)
+                        }
+                    }
+                }
+            }
+            .navigationTitle("Select Currency")
+            .navigationBarTitleDisplayMode(.inline)
+            .searchable(text: $searchText, prompt: "Search currencies")
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button("Cancel") { dismiss() }
+                }
+            }
+        }
     }
 }
 

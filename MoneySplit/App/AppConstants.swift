@@ -12,4 +12,12 @@ enum AppConstants {
         static let maxExpenseTitleLength = 100
         static let maxNotesLength = 500
     }
+
+    /// Currencies supported by Frankfurter.app (ECB rates, ~32 currencies).
+    static let supportedCurrencies: [String] = [
+        "AUD", "BGN", "BRL", "CAD", "CHF", "CNY", "CZK", "DKK",
+        "EUR", "GBP", "HKD", "HUF", "IDR", "ILS", "INR", "ISK",
+        "JPY", "KRW", "MXN", "MYR", "NOK", "NZD", "PHP", "PLN",
+        "RON", "SEK", "SGD", "THB", "TRY", "USD", "ZAR"
+    ]
 }

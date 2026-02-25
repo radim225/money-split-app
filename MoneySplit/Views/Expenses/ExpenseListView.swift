@@ -56,20 +56,19 @@ private struct ExpenseListContent: View {
                 .frame(minHeight: 300)
             } else {
                 ForEach(vm.filteredExpenses) { expense in
-                    ExpenseRowView(expense: expense, group: group)
-                        .swipeActions(edge: .trailing) {
-                            Button(role: .destructive) {
-                                vm.deleteExpense(expense)
-                            } label: {
-                                Label("Delete", systemImage: "trash")
-                            }
-                            Button {
-                                expenseToEdit = expense
-                            } label: {
-                                Label("Edit", systemImage: "pencil")
-                            }
-                            .tint(.orange)
+                    Button {
+                        expenseToEdit = expense
+                    } label: {
+                        ExpenseRowView(expense: expense, group: group)
+                    }
+                    .buttonStyle(.plain)
+                    .swipeActions(edge: .trailing) {
+                        Button(role: .destructive) {
+                            vm.deleteExpense(expense)
+                        } label: {
+                            Label("Delete", systemImage: "trash")
                         }
+                    }
                 }
             }
         }

@@ -20,6 +20,12 @@ final class ExpenseFormViewModel: ObservableObject {
     @Published var splitMode: SplitMode = .equal
     @Published var manualSplits: [UUID: String] = [:]
 
+    // MARK: – Currency
+    @Published var selectedCurrencyCode: String
+    @Published private(set) var isLoadingRate = false
+    @Published var rateError: String? = nil
+    @Published private(set) var convertedPreviewCents: Int? = nil
+
     // MARK: – Derived / validation
     @Published private(set) var splitPreview: [UUID: Int] = [:]
     @Published private(set) var manualSplitTotalCents: Int = 0
@@ -33,16 +39,28 @@ final class ExpenseFormViewModel: ObservableObject {
     private let context: ModelContext
     private let existingExpense: Expense?
 
+    /// Raw cents of the typed amount, in the selected (possibly foreign) currency.
     var amountCents: Int {
         CurrencyFormatter.parseCents(from: amountString)
     }
 
+    /// Cents that will actually be stored — in the group's base currency.
+    var effectiveAmountCents: Int {
+        if selectedCurrencyCode != group.currencyCode {
+            return convertedPreviewCents ?? 0
+        }
+        return amountCents
+    }
+
     var isValid: Bool {
-        !title.trimmingCharacters(in: .whitespaces).isEmpty
+        let currencyReady = selectedCurrencyCode == group.currencyCode || convertedPreviewCents != nil
+        return !title.trimmingCharacters(in: .whitespaces).isEmpty
             && amountCents > 0
             && selectedPayerId != nil
             && !involvedMemberIds.isEmpty
             && validationError == nil
+            && currencyReady
+            && !isLoadingRate
     }
 
     var involvedMembers: [Member] {
@@ -56,10 +74,18 @@ final class ExpenseFormViewModel: ObservableObject {
         self.group = group
         self.existingExpense = expense
         self.isEditing = expense != nil
+        self.selectedCurrencyCode = group.currencyCode
 
         if let expense {
             title = expense.title
-            amountString = CurrencyFormatter.centsToInputString(expense.amountCents)
+            // Show original amount + currency when editing a converted expense
+            let origCode = expense.originalCurrencyCode.isEmpty ? group.currencyCode : expense.originalCurrencyCode
+            selectedCurrencyCode = origCode
+            let origCents = expense.originalAmountCents == 0 ? expense.amountCents : expense.originalAmountCents
+            amountString = CurrencyFormatter.centsToInputString(origCents)
+            if origCode != group.currencyCode {
+                convertedPreviewCents = expense.amountCents
+            }
             selectedCategory = expense.category
             date = expense.date
             notes = expense.notes
@@ -80,13 +106,37 @@ final class ExpenseFormViewModel: ObservableObject {
                 }
             }
         } else {
-            // Default: select all members as involved
             involvedMemberIds = Set(group.members.map(\.id))
-            // Default payer = first member
             selectedPayerId = group.members.sorted { $0.createdAt < $1.createdAt }.first?.id
         }
         recalculateSplits()
     }
+
+    // MARK: – Currency conversion
+
+    func fetchConvertedAmount() async {
+        let raw = amountCents
+        guard raw > 0, selectedCurrencyCode != group.currencyCode else {
+            convertedPreviewCents = nil
+            rateError = nil
+            recalculateSplits()
+            return
+        }
+        isLoadingRate = true
+        rateError = nil
+        defer { isLoadingRate = false }
+        do {
+            let rate = try await ExchangeRateService.shared.rate(from: selectedCurrencyCode, to: group.currencyCode)
+            convertedPreviewCents = Int((Double(raw) * rate).rounded())
+            rateError = nil
+        } catch {
+            convertedPreviewCents = nil
+            rateError = error.localizedDescription
+        }
+        recalculateSplits()
+    }
+
+    // MARK: – Member toggling
 
     func toggleMember(_ id: UUID) {
         if involvedMemberIds.contains(id) {
@@ -107,8 +157,10 @@ final class ExpenseFormViewModel: ObservableObject {
         recalculateSplits()
     }
 
+    // MARK: – Split calculation
+
     func recalculateSplits() {
-        let total = amountCents
+        let total = effectiveAmountCents
         let ids = involvedMembers.map(\.id)
 
         switch splitMode {
@@ -131,31 +183,35 @@ final class ExpenseFormViewModel: ObservableObject {
         }
     }
 
+    // MARK: – Save
+
     func save() {
         guard isValid else { return }
 
         let trimmedTitle = title.trimmingCharacters(in: .whitespaces)
         let ids = involvedMembers.map(\.id)
+        let storedCents = effectiveAmountCents
+        let origCode = selectedCurrencyCode
+        let origCents = amountCents
 
         if let expense = existingExpense {
-            // Update existing
             expense.title = trimmedTitle
-            expense.amountCents = amountCents
+            expense.amountCents = storedCents
+            expense.originalCurrencyCode = origCode
+            expense.originalAmountCents = origCents
             expense.categoryId = selectedCategory.rawValue
             expense.date = date
             expense.notes = notes
             expense.payerId = selectedPayerId!
 
-            // Replace all splits
-            for split in expense.splits {
-                context.delete(split)
-            }
+            for split in expense.splits { context.delete(split) }
             expense.splits = buildSplits(ids: ids, expense: expense)
         } else {
-            // Create new
             let expense = Expense(
                 title: trimmedTitle,
-                amountCents: amountCents,
+                amountCents: storedCents,
+                originalCurrencyCode: origCode,
+                originalAmountCents: origCents,
                 categoryId: selectedCategory.rawValue,
                 date: date,
                 notes: notes,
