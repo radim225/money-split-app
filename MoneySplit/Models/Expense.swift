@@ -5,7 +5,14 @@ import Foundation
 final class Expense {
     var id: UUID
     var title: String
+    /// Amount in the group's base currency — always used for balance calculations.
     var amountCents: Int
+    /// The currency the user originally typed the amount in (e.g. "USD").
+    /// Equals the group's currencyCode when no conversion was done.
+    var originalCurrencyCode: String
+    /// The amount in the original currency before conversion (in cents).
+    /// Equals amountCents when originalCurrencyCode == group.currencyCode.
+    var originalAmountCents: Int
     var categoryId: String
     var date: Date
     var notes: String
@@ -21,6 +28,8 @@ final class Expense {
         id: UUID = UUID(),
         title: String,
         amountCents: Int,
+        originalCurrencyCode: String = "",
+        originalAmountCents: Int = 0,
         categoryId: String,
         date: Date = Date(),
         notes: String = "",
@@ -30,6 +39,8 @@ final class Expense {
         self.id = id
         self.title = title
         self.amountCents = amountCents
+        self.originalCurrencyCode = originalCurrencyCode
+        self.originalAmountCents = originalAmountCents
         self.categoryId = categoryId
         self.date = date
         self.notes = notes
