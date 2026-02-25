@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 63;
+	objectVersion = 77;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -18,6 +18,7 @@
 		387511AB363F3EAEA8B10ECE /* CategoryBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8228615EF4A49BD9986EC9E0 /* CategoryBadge.swift */; };
 		38FDB44385F8705AFCCBCA5D /* ExpenseSplit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20DB6FE0F87CB3227B3720AE /* ExpenseSplit.swift */; };
 		3A80EB4BB21A768AB5D1280F /* ExpenseListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C4BE48E263E53E18F2455DA /* ExpenseListView.swift */; };
+		4A9DE076FA9962E5232114A5 /* ExchangeRateService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54DC482FB521A9744BC474E3 /* ExchangeRateService.swift */; };
 		5308398E972EED13A9B28FDF /* AppTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53C5B32BD31CE044CC6133A1 /* AppTheme.swift */; };
 		5E9FBD2BB4348E3D8B4B25AC /* Category.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A7523E58185C62B09BC357B /* Category.swift */; };
 		68EF4C85769ED7AE8B6C2D62 /* DashboardSummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8C9BE2CE7EE683235B0ADBD /* DashboardSummaryView.swift */; };
@@ -67,6 +68,7 @@
 		389C00022AE5AADB2151E6C8 /* MemberDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemberDetailViewModel.swift; sourceTree = "<group>"; };
 		4A7523E58185C62B09BC357B /* Category.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Category.swift; sourceTree = "<group>"; };
 		53C5B32BD31CE044CC6133A1 /* AppTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTheme.swift; sourceTree = "<group>"; };
+		54DC482FB521A9744BC474E3 /* ExchangeRateService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExchangeRateService.swift; sourceTree = "<group>"; };
 		5B65093580EA03CDE403288D /* Expense.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Expense.swift; sourceTree = "<group>"; };
 		5B7102FBC20555BA70BD74DA /* GroupDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupDetailView.swift; sourceTree = "<group>"; };
 		6593BEDD9D3E7A0E4C4AB479 /* PreviewData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewData.swift; sourceTree = "<group>"; };
@@ -81,7 +83,7 @@
 		9A2F162B6F4D7EA0A95AF38A /* SplitCalculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitCalculator.swift; sourceTree = "<group>"; };
 		9DAC0DE9494AA982C23BE878 /* MemberRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemberRowView.swift; sourceTree = "<group>"; };
 		9E28D9C80FF83C3322FEA453 /* BalanceCalculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BalanceCalculator.swift; sourceTree = "<group>"; };
-		A2EEA677D8987CFACDFDDC22 /* Money Split.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Money Split.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		A2EEA677D8987CFACDFDDC22 /* MoneySplit.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = MoneySplit.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A355BCB68661DB5B680BA5B7 /* MembersViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MembersViewModel.swift; sourceTree = "<group>"; };
 		B7081BDA3375F1B7D48FA2FF /* MemberDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemberDetailView.swift; sourceTree = "<group>"; };
 		B7A644599BDBF4CFBC24BFEF /* MembersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MembersView.swift; sourceTree = "<group>"; };
@@ -155,6 +157,7 @@
 			children = (
 				9E28D9C80FF83C3322FEA453 /* BalanceCalculator.swift */,
 				BABDE43BF0756882BEB609FE /* CurrencyFormatter.swift */,
+				54DC482FB521A9744BC474E3 /* ExchangeRateService.swift */,
 				9A2F162B6F4D7EA0A95AF38A /* SplitCalculator.swift */,
 			);
 			path = Services;
@@ -182,7 +185,7 @@
 		83EC56288DAE6AA655D72398 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				A2EEA677D8987CFACDFDDC22 /* Money Split.app */,
+				A2EEA677D8987CFACDFDDC22 /* MoneySplit.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -290,7 +293,7 @@
 			packageProductDependencies = (
 			);
 			productName = MoneySplit;
-			productReference = A2EEA677D8987CFACDFDDC22 /* Money Split.app */;
+			productReference = A2EEA677D8987CFACDFDDC22 /* MoneySplit.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -300,7 +303,7 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
-				LastUpgradeCheck = 2620;
+				LastUpgradeCheck = 1600;
 			};
 			buildConfigurationList = B4672E0F3C67D33CF3823DF9 /* Build configuration list for PBXProject "MoneySplit" */;
 			compatibilityVersion = "Xcode 14.0";
@@ -312,6 +315,7 @@
 			);
 			mainGroup = 1E8F26CF19AA98CBF20B5F6C;
 			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
@@ -352,6 +356,7 @@
 				ED0D3D5F618CDC7A0D35B513 /* CurrencyText.swift in Sources */,
 				68EF4C85769ED7AE8B6C2D62 /* DashboardSummaryView.swift in Sources */,
 				86729009659986E7F590B422 /* EmptyStateView.swift in Sources */,
+				4A9DE076FA9962E5232114A5 /* ExchangeRateService.swift in Sources */,
 				DF7E40B668B9400234980566 /* Expense.swift in Sources */,
 				00C7F47A448A249454F5B5CB /* ExpenseFormView.swift in Sources */,
 				0815D6EAE649928970910FDD /* ExpenseFormViewModel.swift in Sources */,
@@ -420,11 +425,9 @@
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = N3Y8QAD24R;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -440,7 +443,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.moneysplit.app;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
-				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				SWIFT_STRICT_CONCURRENCY = complete;
@@ -503,10 +505,8 @@
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = N3Y8QAD24R;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -529,7 +529,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.moneysplit.app;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
-				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_STRICT_CONCURRENCY = complete;
