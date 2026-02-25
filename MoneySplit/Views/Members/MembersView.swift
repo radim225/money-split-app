@@ -54,12 +54,24 @@ private struct MembersContent: View {
                             .tint(.orange)
                         }
                     }
+                    
+                    // Add Member button in list
+                    Button {
+                        vm.showAddSheet = true
+                    } label: {
+                        HStack {
+                            Image(systemName: "plus.circle.fill")
+                                .foregroundStyle(AppTheme.accentColor)
+                            Text("Add Member")
+                                .foregroundStyle(AppTheme.accentColor)
+                        }
+                    }
                 }
             }
         }
         .listStyle(.insetGrouped)
         .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
+            ToolbarItem(placement: .primaryAction) {
                 Button {
                     vm.showAddSheet = true
                 } label: {
