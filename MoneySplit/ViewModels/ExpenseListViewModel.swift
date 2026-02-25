@@ -5,8 +5,6 @@ import SwiftData
 final class ExpenseListViewModel: ObservableObject {
     @Published var selectedCategory: ExpenseCategory? = nil
     @Published var sortNewest = true
-    @Published var showAddExpense = false
-    @Published var expenseToEdit: Expense? = nil
     @Published var errorMessage: String? = nil
 
     let group: SplitGroup
