@@ -72,8 +72,9 @@ struct DashboardSummaryView: View {
                 if let vm, !vm.memberSummaries.isEmpty {
                     Section("Members") {
                         ForEach(vm.memberSummaries) { summary in
+                            if let member = group.members.first(where: { $0.id == summary.id }) {
                             NavigationLink(destination: MemberDetailView(
-                                member: group.members.first { $0.id == summary.id } ?? group.members[0],
+                                member: member,
                                 group: group
                             )) {
                                 HStack(spacing: 12) {
@@ -106,6 +107,7 @@ struct DashboardSummaryView: View {
                                 }
                                 .padding(.vertical, 4)
                             }
+                            }  // end if let member
                         }
                     }
                 }

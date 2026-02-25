@@ -186,7 +186,7 @@ final class ExpenseFormViewModel: ObservableObject {
     // MARK: – Save
 
     func save() {
-        guard isValid else { return }
+        guard isValid, let payerId = selectedPayerId else { return }
 
         let trimmedTitle = title.trimmingCharacters(in: .whitespaces)
         let ids = involvedMembers.map(\.id)
@@ -202,7 +202,7 @@ final class ExpenseFormViewModel: ObservableObject {
             expense.categoryId = selectedCategory.rawValue
             expense.date = date
             expense.notes = notes
-            expense.payerId = selectedPayerId!
+            expense.payerId = payerId
 
             for split in expense.splits { context.delete(split) }
             expense.splits = buildSplits(ids: ids, expense: expense)
@@ -215,7 +215,7 @@ final class ExpenseFormViewModel: ObservableObject {
                 categoryId: selectedCategory.rawValue,
                 date: date,
                 notes: notes,
-                payerId: selectedPayerId!
+                payerId: payerId
             )
             expense.group = group
             context.insert(expense)

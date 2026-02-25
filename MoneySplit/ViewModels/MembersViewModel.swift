@@ -6,7 +6,6 @@ final class MembersViewModel: ObservableObject {
     @Published var newMemberName: String = ""
     @Published var newMemberColorHex: String = AppTheme.avatarColors[0]
     @Published var showAddSheet = false
-    @Published var memberToEdit: Member? = nil
     @Published var errorMessage: String? = nil
 
     let group: SplitGroup
